@@ -6,6 +6,7 @@ use App\Models\Reservas;
 use App\Models\Habitaciones;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ReservasController extends Controller
 {
@@ -87,19 +88,13 @@ class ReservasController extends Controller
     {
         $fechaInicio = $request->input('fecha_entrada');
         $fechaFin = $request->input('fecha_salida');
+        $cupo = $request->input('num_personas');
 
         // Validar que la fecha de entrada no sea menor a la fecha actual
         $validator = Validator::make($request->all(), [
             'fecha_entrada' => 'required|date|after_or_equal:today',
-        ]);
-
-        if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator)->withInput();
-        }
-
-        // Validar que la fecha de salida no sea menor a la fecha de entrada
-        $validator = Validator::make($request->all(), [
             'fecha_salida' => 'required|date|after:fecha_entrada',
+            'num_personas' => 'required|numeric|min:1',
         ]);
 
         if ($validator->fails()) {
@@ -107,19 +102,23 @@ class ReservasController extends Controller
         }
 
         // Realiza la búsqueda en la base de datos según las fechas proporcionadas
-        $habitaciones = Habitaciones::where('estado', 1)->get();
+        $habitaciones = DB::table('habitaciones')
+                ->where('estado', 1)
+                ->where('cupo', '>=', $cupo)
+                ->get();
+
         $reservas = Reservas::join('habitaciones', 'habitaciones.id', '=', 'reserva.habitacion_id')
-        ->select('habitaciones.*')
-        ->where('reserva.fecha_fin', '<', $fechaInicio)
-        ->where('reserva.estado', 1)
-        ->get();
+                ->select('habitaciones.*')
+                ->where('reserva.fecha_fin', '<', $fechaInicio)
+                ->where('reserva.estado', 1)
+                ->where('habitaciones.cupo', '>=', $cupo)
+                ->get();
 
-        $resultado = $habitaciones->concat($reservas);
+        $availables = $habitaciones->concat($reservas);
 
+        //dd($habitaciones, $reservas, $availables);
 
-        dd($habitaciones, $reservas, $resultado);
-
-
+        return view('reservas.index', ['availables' => $availables, 'fechaInicio' => $fechaInicio, 'fechaFin' => $fechaFin, 'cupo' => $cupo]);
 
     }
 

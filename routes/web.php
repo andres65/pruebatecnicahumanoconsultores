@@ -33,13 +33,13 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::resource('tipodocumento', TipoDocumentosController::class);
-Route::resource('empleados', EmpleadosController::class);
-Route::resource('clientes', ClientesController::class);
-Route::resource('habitaciones', HabitacionesController::class);
-Route::resource('reservas', ReservasController::class);
+Route::resource('tipodocumento', TipoDocumentosController::class)->middleware(['auth', 'verified']);
+Route::resource('empleados', EmpleadosController::class)->middleware(['auth', 'verified']);
+Route::resource('clientes', ClientesController::class)->middleware(['auth', 'verified']);
+Route::resource('habitaciones', HabitacionesController::class)->middleware(['auth', 'verified']);
+Route::resource('reservas', ReservasController::class)->middleware(['auth', 'verified']);
 
-Route::post('/reservas-buscar', 'App\Http\Controllers\ReservasController@searchReservation')->name('reservas.buscar');
+Route::post('/reservas-buscar', 'App\Http\Controllers\ReservasController@searchReservation')->middleware(['auth', 'verified'])->name('reservas.buscar');
 
 
 require __DIR__.'/auth.php';

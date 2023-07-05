@@ -19,9 +19,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('welcome');
+// });
+
+Route::get('/', function () {  return redirect('login'); });
 
 Route::get('/dashboard', function () {
     return view('dashboard');
@@ -40,6 +42,7 @@ Route::resource('habitaciones', HabitacionesController::class)->middleware(['aut
 Route::resource('reservas', ReservasController::class)->middleware(['auth', 'verified']);
 
 Route::post('/reservas-buscar', 'App\Http\Controllers\ReservasController@searchReservation')->middleware(['auth', 'verified'])->name('reservas.buscar');
-
+Route::post('/reservas-createcliente', 'App\Http\Controllers\ReservasController@createCliente')->middleware(['auth', 'verified'])->name('reservas.createcliente');
+Route::get('/reservas-buscarcliente', 'App\Http\Controllers\ReservasController@buscarCliente')->middleware(['auth', 'verified'])->name('reservas.buscarcliente');
 
 require __DIR__.'/auth.php';

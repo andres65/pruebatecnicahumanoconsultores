@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Reservas;
 use App\Models\Habitaciones;
+use App\Models\Clientes;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -15,8 +16,11 @@ class ReservasController extends Controller
      */
     public function index()
     {
+        $tipoDocumento=DB::table('tipo_documentos')
+        ->where('estado', '=', 1)
+        ->get();
         $habitaciones=Habitaciones::all();
-        return view('reservas.index', compact('habitaciones'));
+        return view('reservas.index', compact('habitaciones','tipoDocumento'));
     }
 
     /**
@@ -101,6 +105,10 @@ class ReservasController extends Controller
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
+        $tipoDocumento=DB::table('tipo_documentos')
+        ->where('estado', '=', 1)
+        ->get();
+
         // Realiza la búsqueda en la base de datos según las fechas proporcionadas
         $habitaciones = DB::table('habitaciones')
                 ->where('estado', 1)
@@ -118,7 +126,53 @@ class ReservasController extends Controller
 
         //dd($habitaciones, $reservas, $availables);
 
-        return view('reservas.index', ['availables' => $availables, 'fechaInicio' => $fechaInicio, 'fechaFin' => $fechaFin, 'cupo' => $cupo]);
+        return view('reservas.index', ['availables' => $availables, 'fechaInicio' => $fechaInicio, 'fechaFin' => $fechaFin, 'cupo' => $cupo, 'tipoDocumento' => $tipoDocumento]);
+
+    }
+
+    public function createCliente(Request $request)
+    {
+        //dd($request);
+        $validator = Validator::make($request->all(), [
+            'nombre' => 'required|min:3',
+            'apellido' => 'required|min:3',
+            'tipo_documento_id' => 'required',
+            'documento' => 'required|min:5|unique:clientes,documento',
+            'email' => 'required|email|unique:clientes,email',
+            'fecha_nacimiento' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+
+        $clientes=new Clientes;
+        $clientes->nombre=$request->input('nombre');
+        $clientes->apellido=$request->input('apellido');
+        $clientes->tipo_documento_id=$request->input('tipo_documento_id');
+        $clientes->documento=$request->input('documento');
+        $clientes->email=$request->input('email');
+        $clientes->fecha_nacimiento=$request->input('fecha_nacimiento');
+        $clientes->save();
+
+        //return view('reservas.index', compact('habitaciones','tipoDocumento'));
+        return redirect('reservas');
+    }
+
+    public function buscarCliente(Request $request)
+    {
+        $searchTerm = $request->input('search');
+
+        // Realiza la lógica de búsqueda de clientes en tu base de datos
+        $resultados = Clientes::where('documento', $searchTerm)->get();
+
+        if ($resultados) {
+          // Devuelve los resultados como una respuesta JSON
+          return response()->json($resultados);
+        } else {
+          // No se encontraron resultados
+          return response()->json();
+        }
 
     }
 

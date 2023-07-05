@@ -40,6 +40,11 @@
             </form>
         <div class="col-md-11">
             <br>
+                        <!-- Button trigger modal -->
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#create_cliente">
+                Nuevo
+            </button>
+            <br><br>
             <div class="table-responsive">
                 <table class="table">
                     <thead class="bg-dark text-white">
@@ -58,21 +63,19 @@
                                     <td>{{$available->cupo}}</td>
                                     <td>{{$available->observaciones}}</td>
                                     <td>
-                                        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#edit{{$available->id}}" title="Editar">
-                                            <i class="fas fa-pen"></i>
-                                        </button>
-                                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#delete{{$available->id}}" title="Eliminar">
-                                            <i class="fas fa-trash"></i>
+                                        <button type="button" class="btn btn-info" data-toggle="modal" data-target="#edit{{$available->id}}" title="Reservar">
+                                            <i class="fas fa-bell"></i>
                                         </button>
                                     </td>
                                 </tr>
-                                {{-- @include('reservas.info') --}}
+                                @include('reservas.info')
                             @endforeach
                         @endif
                     </tbody>
                 </table>
             </div>
-            @include('reservas.create')
+            {{-- @include('reservas.create') --}}
+            @include('reservas.create_cliente')
 
         </div>
     </div>
@@ -86,9 +89,73 @@
 @section('js')
     <script> console.log('Menu Reservas!'); </script>
     <script>
+        $(document).ready(function() {
+            console.log('READY!');
+            // Manejar el evento de clic en el botón "Buscar"
+            $(document).on('click', '.btnBuscar', function() {
+                //var searchTerm = $('#searchInput').val();
+                // Obtener el valor de búsqueda dentro del modal actual
+                var searchTerm = $(this).closest('.modal-content').find('.searchInput').val();
+                var idmodal = $('#idmodal').val();
+
+                // Realizar una llamada AJAX para buscar clientes
+                $.ajax({
+                url: '/reservas-buscarcliente', // Reemplaza esto con la ruta real a tu función de búsqueda en Laravel
+                method: 'GET',
+                data: { search: searchTerm },
+                dataType: 'json',
+                success: function(response) {
+                    // Limpiar los resultados anteriores
+                    $('#searchResults'+idmodal).empty();
+                    $('#searchMessage'+idmodal).empty();
+
+                    if (response.length > 0) {
+                        // Mostrar los nuevos resultados
+                        response.forEach(function(cliente) {
+                            var clienteHtml = '<div class="cliente">' +
+                                                '<h4>' + cliente.nombre + ' ' + cliente.apellido + '</h4>' +
+                                                '<p>' + cliente.documento + '</p>' +
+                                                '<p>' + cliente.email + '</p>' +
+                                            '</div>';
+
+                            $('#searchResults'+idmodal).append(clienteHtml);
+                        });
+
+                    } else {
+                        // Mostrar mensaje si no se encuentran resultados
+                        var mensajeHtml = '<p style="color: red;">No se encontraron resultados.</p>' +
+                        '<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#create_cliente">Agregar Nuevo Cliente</button>'+
+                                            '<button id="redireccionarBtn" class="btn btn-info">Agregar Nuevo Cliente</button>' + '<br><br>';
+                        $('#searchMessage'+idmodal).html(mensajeHtml);
+
+                        // Agregar evento de clic al botón "Ir a otra vista"
+                        $('#redireccionarBtn').click(function() {
+                        // Redireccionar a la otra vista
+                        window.location.href = '/clientes'; // Reemplaza esto con la ruta real a la otra vista
+                        });
+                    }
+                }
+                });
+            });
+
+            // Evento que se activa al cerrar cualquier modal
+            $(document).on('hidden.bs.modal', '.modal', function() {
+                // Restablecer los campos de búsqueda del modal actual
+                 var idmodal = $('#idmodal').val();
+                $(this).find('.searchInput').val('');
+
+                // Restablecer los resultados y el mensaje del modal actual
+                $(this).find('#searchResults'+idmodal).empty();
+                $(this).find('#searchMessage'+idmodal).empty();
+            });
+
+        });
+</script>
+
+    <script>
         document.querySelector('form').addEventListener('submit', function(event) {
         event.preventDefault(); // Previene el envío del formulario
-console.log('entro aqui ');
+        console.log('entro aqui ');
         // Obtén los valores de las fechas de inicio y fin
         var fechaInicio = document.getElementById('fecha_inicio').value;
         var fechaFin = document.getElementById('fecha_fin').value;
@@ -99,6 +166,6 @@ console.log('entro aqui ');
         // Envía el formulario
         this.submit();
     });
-</script>
+    </script>
 
 @stop

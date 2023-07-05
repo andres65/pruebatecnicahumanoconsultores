@@ -19,7 +19,7 @@
                         <label for="searchInput">Buscar cliente por N° de Identificación</label>
                         <div class="col-md-10">
                             <input type="text" class="form-control searchInput" placeholder="Ingrese el nombre del cliente" minlength="3" required>
-                            <input type="text" id="idmodal" value="{{$available->id}}"  hidden>
+                            <input type="text" class="idmodal" value="{{$available->id}}"  >
                         </div>
                         <div class="col-md-2">
                             <button type="button" class="btn btn-primary btnBuscar">Buscar</button>

@@ -92,11 +92,12 @@
         $(document).ready(function() {
             console.log('READY!');
             // Manejar el evento de clic en el botón "Buscar"
+
             $(document).on('click', '.btnBuscar', function() {
                 //var searchTerm = $('#searchInput').val();
                 // Obtener el valor de búsqueda dentro del modal actual
                 var searchTerm = $(this).closest('.modal-content').find('.searchInput').val();
-                var idmodal = $('#idmodal').val();
+                var idmodal = $(this).closest('.modal-content').find('.idmodal').val();
 
                 // Realizar una llamada AJAX para buscar clientes
                 $.ajax({
@@ -141,7 +142,7 @@
             // Evento que se activa al cerrar cualquier modal
             $(document).on('hidden.bs.modal', '.modal', function() {
                 // Restablecer los campos de búsqueda del modal actual
-                 var idmodal = $('#idmodal').val();
+                var idmodal = $(this).find('.idmodal').attr('value');
                 $(this).find('.searchInput').val('');
 
                 // Restablecer los resultados y el mensaje del modal actual

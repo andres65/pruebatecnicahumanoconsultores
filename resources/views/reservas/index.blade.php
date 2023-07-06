@@ -111,12 +111,30 @@
                     $('#searchMessage'+idmodal).empty();
 
                     if (response.length > 0) {
+
+                        //ocultar formulario de crear cliente
+                        var modalCliente = document.getElementById('modal-cliente'+idmodal);
+                        modalCliente.style.display = 'none';
+
                         // Mostrar los nuevos resultados
                         response.forEach(function(cliente) {
-                            var clienteHtml = '<div class="cliente">' +
-                                                '<h4>' + cliente.nombre + ' ' + cliente.apellido + '</h4>' +
-                                                '<p>' + cliente.documento + '</p>' +
-                                                '<p>' + cliente.email + '</p>' +
+
+                            var clienteHtml = '<div class="form-row">' +
+                                                '<div class="col-md-6 mb-3">' +
+                                                    '<label for="" class="form-label">CLIENTE</label>' +
+                                                    '<input type="text" class="form-control" name="clientereserva" id="cliente" aria-describedby="helpId" value="' +
+                                                    cliente.nombre +
+                                                    '" >' +
+                                                '</div>' +
+                                                '<div class="col-md-6 mb-3">' +
+                                                    '<label for="" class="form-label">IDENTIFICACIÓN</label>' +
+                                                    '<input type="text" class="form-control" name="identificacionclientereserva" id="identificacion" aria-describedby="helpId" value="' +
+                                                    cliente.documento +
+                                                    '" >' +
+                                                '</div>' +
+                                                '<input type="text" class="form-control" name="idcliente" id="idclientereserva" aria-describedby="helpId" value="' +
+                                                    cliente.id +
+                                                    '" hidden>' +
                                             '</div>';
 
                             $('#searchResults'+idmodal).append(clienteHtml);
@@ -124,16 +142,13 @@
 
                     } else {
                         // Mostrar mensaje si no se encuentran resultados
-                        var mensajeHtml = '<p style="color: red;">No se encontraron resultados.</p>' +
-                        '<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#create_cliente">Agregar Nuevo Cliente</button>'+
-                                            '<button id="redireccionarBtn" class="btn btn-info">Agregar Nuevo Cliente</button>' + '<br><br>';
+                        var mensajeHtml = '<p style="color: red;">No se encontraron resultados.</p>' + '<hr>' +
+                                            '<h5 style="text-align: center;"><strong>AGREGAR NUEVO CLIENTE</strong></h5>';
                         $('#searchMessage'+idmodal).html(mensajeHtml);
 
-                        // Agregar evento de clic al botón "Ir a otra vista"
-                        $('#redireccionarBtn').click(function() {
-                        // Redireccionar a la otra vista
-                        window.location.href = '/clientes'; // Reemplaza esto con la ruta real a la otra vista
-                        });
+                        // mostrar formulario para agregar nuevo cliente
+                        var modalCliente = document.getElementById('modal-cliente'+idmodal);
+                        modalCliente.style.display = 'block';
                     }
                 }
                 });
@@ -148,6 +163,10 @@
                 // Restablecer los resultados y el mensaje del modal actual
                 $(this).find('#searchResults'+idmodal).empty();
                 $(this).find('#searchMessage'+idmodal).empty();
+
+                //ocultar formulario de crear cliente
+                var modalCliente = document.getElementById('modal-cliente'+idmodal);
+                modalCliente.style.display = 'none';
             });
 
         });
@@ -156,7 +175,7 @@
     <script>
         document.querySelector('form').addEventListener('submit', function(event) {
         event.preventDefault(); // Previene el envío del formulario
-        console.log('entro aqui ');
+
         // Obtén los valores de las fechas de inicio y fin
         var fechaInicio = document.getElementById('fecha_inicio').value;
         var fechaFin = document.getElementById('fecha_fin').value;

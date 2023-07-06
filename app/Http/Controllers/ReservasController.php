@@ -132,31 +132,20 @@ class ReservasController extends Controller
 
     public function createCliente(Request $request)
     {
-        //dd($request);
-        $validator = Validator::make($request->all(), [
-            'nombre' => 'required|min:3',
-            'apellido' => 'required|min:3',
-            'tipo_documento_id' => 'required',
-            'documento' => 'required|min:5|unique:clientes,documento',
-            'email' => 'required|email|unique:clientes,email',
-            'fecha_nacimiento' => 'required',
-        ]);
+        dd($request);
 
-        if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator)->withInput();
-        }
 
-        $clientes=new Clientes;
-        $clientes->nombre=$request->input('nombre');
-        $clientes->apellido=$request->input('apellido');
-        $clientes->tipo_documento_id=$request->input('tipo_documento_id');
-        $clientes->documento=$request->input('documento');
-        $clientes->email=$request->input('email');
-        $clientes->fecha_nacimiento=$request->input('fecha_nacimiento');
-        $clientes->save();
+        // $clientes=new Clientes;
+        // $clientes->nombre=$request->input('nombre');
+        // $clientes->apellido=$request->input('apellido');
+        // $clientes->tipo_documento_id=$request->input('tipo_documento_id');
+        // $clientes->documento=$request->input('documento');
+        // $clientes->email=$request->input('email');
+        // $clientes->fecha_nacimiento=$request->input('fecha_nacimiento');
+        // $clientes->save();
 
-        //return view('reservas.index', compact('habitaciones','tipoDocumento'));
-        return redirect('reservas');
+        // //return view('reservas.index', compact('habitaciones','tipoDocumento'));
+        // return redirect('reservas');
     }
 
     public function buscarCliente(Request $request)

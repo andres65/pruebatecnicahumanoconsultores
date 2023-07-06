@@ -42,4 +42,9 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function getNameUser($id){
+        $user = User::find($id);
+        return $user->name;
+    }
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Reservas;
 use App\Models\Habitaciones;
 use App\Models\Clientes;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -184,7 +185,8 @@ class ReservasController extends Controller
         $habitaciones->estado=0;
         $habitaciones->update();
 
-        //return view('reservas.index', compact('habitaciones','tipoDocumento'));
+        $datos = $this->datoslistaReservas();
+        //return view('reservas.listareservas', ['datos' => $datos]);
         return redirect('reservas');
     }
 
@@ -204,6 +206,29 @@ class ReservasController extends Controller
         }
 
     }
+
+    public function listaReservas()
+    {
+        $reservas = Reservas::where('estado', 1)->get();
+        $modelCliente = new Clientes();
+        $modelHabitacion = new Habitaciones();
+        $modelUser = new User();
+
+        return view('reservas.listareservas', ['reservas' => $reservas,'modelCliente' => $modelCliente,'modelHabitacion' => $modelHabitacion,'modelUser' => $modelUser]);
+    }
+
+
+    private function datoslistaReservas()
+    {
+        $reservas = Reservas::where('estado', 1)->get();
+        $modelCliente = new Clientes();
+        $modelHabitacion = new Habitaciones();
+        $modelUser = new User();
+
+        $datos = ['reservas' => $reservas,'modelCliente' => $modelCliente,'modelHabitacion' => $modelHabitacion,'modelUser' => $modelUser];
+        return $datos;
+    }
+
 
 
 }

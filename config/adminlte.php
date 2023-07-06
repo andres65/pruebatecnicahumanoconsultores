@@ -338,6 +338,11 @@ return [
             'url'  => 'reservas',
             'icon' => 'fas fa-fw fa-hotel',
         ],
+        [
+            'text' => 'Lista de Reservas',
+            'url'  => 'reservas-listareservas',
+            'icon' => 'fas fa-fw fa-clipboard-list',
+        ],
         ['header' => 'AGENDA'],
         [
             'text' => 'Agenda',

@@ -30,4 +30,9 @@ class Habitaciones extends Model
      */
     protected $fillable = ['nombre', 'estado', 'cupo','observaciones'];
 
+    public function getNameRoom($id){
+        $habitacion=Habitaciones::find($id);
+        return $habitacion->nombre;
+    }
+
 }

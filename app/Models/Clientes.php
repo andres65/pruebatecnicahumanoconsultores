@@ -34,4 +34,15 @@ class Clientes extends Model
         return $this->belongsTo(TipoDocumentos::class);
     }
 
+    public function getNameCustomer($id){
+        $cliente=Clientes::find($id);
+        $nombre = $cliente->nombre .' '. $cliente->apellido;
+        return $nombre;
+    }
+
+    public function getNameCustomerNumDocument($id){
+        $numDocument=Clientes::find($id);
+        return $numDocument->documento;
+    }
+
 }

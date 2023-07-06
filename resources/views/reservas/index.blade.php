@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'Habitaciones')
+@section('title', 'Reservaciones')
 
 @section('content_header')
     <h1>Reservaciónes</h1>
@@ -40,11 +40,6 @@
             </form>
         <div class="col-md-11">
             <br>
-                        <!-- Button trigger modal -->
-            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#create_cliente">
-                Nuevo
-            </button>
-            <br><br>
             <div class="table-responsive">
                 <table class="table">
                     <thead class="bg-dark text-white">

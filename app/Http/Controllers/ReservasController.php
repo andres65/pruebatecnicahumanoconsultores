@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Reservas;
 use App\Models\Habitaciones;
 use App\Models\Clientes;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -132,20 +134,58 @@ class ReservasController extends Controller
 
     public function createCliente(Request $request)
     {
-        dd($request);
+        //obtener el N° de dias
+        $fechaInicio = $request->input('fechaInicio');
+        $fechaFin = $request->input('fechaFin');
+        $inicio = Carbon::createFromFormat('Y-m-d', $fechaInicio);
+        $fin = Carbon::createFromFormat('Y-m-d', $fechaFin);
+        $numDias = $inicio->diffInDays($fin);
+
+        //validar si es un cliente nuevo
+        $cliente_id = $request->input('idclientereserva');
+        if (is_null($cliente_id)) {
+            $validator = Validator::make($request->all(), [
+                'nombrecliente' => 'required|min:3',
+                'apellidocliente' => 'required|min:3',
+                'tipo_documento_id' => 'required',
+                'documentocliente' => 'required|min:5|unique:clientes,documento',
+                'emailcliente' => 'required|email|unique:clientes,email',
+                'fecha_nacimientocliente' => 'required',
+            ]);
+
+            if ($validator->fails()) {
+                return redirect()->back()->withErrors($validator)->withInput();
+            }
+
+            $clientes=new Clientes;
+            $clientes->nombre=$request->input('nombrecliente');
+            $clientes->apellido=$request->input('apellidocliente');
+            $clientes->tipo_documento_id=$request->input('tipo_documento_id');
+            $clientes->documento=$request->input('documentocliente');
+            $clientes->email=$request->input('emailcliente');
+            $clientes->fecha_nacimiento=$request->input('fecha_nacimientocliente');
+            $clientes->save();
+
+            $cliente_id = $clientes->id;
+        }
 
 
-        // $clientes=new Clientes;
-        // $clientes->nombre=$request->input('nombre');
-        // $clientes->apellido=$request->input('apellido');
-        // $clientes->tipo_documento_id=$request->input('tipo_documento_id');
-        // $clientes->documento=$request->input('documento');
-        // $clientes->email=$request->input('email');
-        // $clientes->fecha_nacimiento=$request->input('fecha_nacimiento');
-        // $clientes->save();
+        $reserva=new Reservas;
+        $reserva->habitacion_id=$request->input('idhabitacion');
+        $reserva->dias=$numDias;
+        $reserva->fecha_inicio=$fechaInicio;
+        $reserva->fecha_fin=$fechaFin;
+        $reserva->cliente_id=$cliente_id;
+        $reserva->empleado_id=Auth::user()->id;
+        $reserva->save();
 
-        // //return view('reservas.index', compact('habitaciones','tipoDocumento'));
-        // return redirect('reservas');
+        //editar el estado de la habitacion reservada
+        $habitaciones=Habitaciones::find($request->input('idhabitacion'));
+        $habitaciones->estado=0;
+        $habitaciones->update();
+
+        //return view('reservas.index', compact('habitaciones','tipoDocumento'));
+        return redirect('reservas');
     }
 
     public function buscarCliente(Request $request)

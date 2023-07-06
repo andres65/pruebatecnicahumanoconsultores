@@ -29,6 +29,7 @@
                 <div id="searchResults{{$available->id}}">
                     <!-- Aquí se mostrarán los resultados de búsqueda -->
                 </div>
+
                 <div id="searchMessage{{$available->id}}">
                     <!-- Aquí se mostrará el mensaje si no se encuentran resultados -->
                 </div>
@@ -74,9 +75,13 @@
 
                         <div class="col-md-6 mb-3">
                         <label for="" class="form-label">CUMPLEAÑOS</label>
-                        <input type="date"
-                            class="form-control" name="fecha_nacimientocliente" id="" aria-describedby="helpId" placeholder="" >
+                        <input type="date" class="form-control" name="fecha_nacimientocliente" id="" aria-describedby="helpId" placeholder="" >
                         </div>
+
+                        <input type="text" class="form-control" name="idhabitacion" id="" aria-describedby="helpId" value="{{$available->id}}" hidden>
+                        <input type="text" class="form-control" name="fechaInicio" id="" aria-describedby="helpId" value="{{$fechaInicio}}" hidden>
+                        <input type="text" class="form-control" name="fechaFin" id="" aria-describedby="helpId" value="{{$fechaFin}}" hidden>
+                        <input type="text" class="form-control" name="idclientereserva" id="idclientereserva" aria-describedby="helpId" hidden>
                     </div>
                     <hr>
                 </div>
@@ -91,4 +96,115 @@
     </div>
   </div>
 </div>
+
+@section('js')
+    <script> console.log('Menu Reservas!'); </script>
+    <script>
+        $(document).ready(function() {
+            console.log('READY!');
+            // Manejar el evento de clic en el botón "Buscar"
+
+            $(document).on('click', '.btnBuscar', function() {
+                //var searchTerm = $('#searchInput').val();
+                // Obtener el valor de búsqueda dentro del modal actual
+                var searchTerm = $(this).closest('.modal-content').find('.searchInput').val();
+                var idmodal = $(this).closest('.modal-content').find('.idmodal').val();
+
+                // Realizar una llamada AJAX para buscar clientes
+                $.ajax({
+                url: '/reservas-buscarcliente', // Reemplaza esto con la ruta real a tu función de búsqueda en Laravel
+                method: 'GET',
+                data: { search: searchTerm },
+                dataType: 'json',
+                success: function(response) {
+                    // Limpiar los resultados anteriores
+                    $('#searchResults'+idmodal).empty();
+                    $('#searchMessage'+idmodal).empty();
+
+                    if (response.length > 0) {
+
+                        //ocultar formulario de crear cliente
+                        var modalCliente = document.getElementById('modal-cliente'+idmodal);
+                        modalCliente.style.display = 'none';
+
+                        // Mostrar los nuevos resultados
+                        response.forEach(function(cliente) {
+
+                            var inputClientereserva = document.getElementById('idclientereserva');
+                            inputClientereserva.value = cliente.id;
+
+                            var clienteHtml = '<div class="form-row">' +
+                                                '<div class="col-md-6 mb-3">' +
+                                                    '<label for="" class="form-label">CLIENTE</label>' +
+                                                    '<input type="text" class="form-control" name="clientereserva" id="cliente" aria-describedby="helpId" value="' +
+                                                    cliente.nombre +
+                                                    '" disabled>' +
+                                                '</div>' +
+                                                '<div class="col-md-6 mb-3">' +
+                                                    '<label for="" class="form-label">IDENTIFICACIÓN</label>' +
+                                                    '<input type="text" class="form-control" name="identificacionclientereserva" id="identificacion" aria-describedby="helpId" value="' +
+                                                    cliente.documento +
+                                                    '" disabled>' +
+                                                '</div>' +
+                                                '<input type="text" class="form-control" name="idcliente" id="idclienter" aria-describedby="helpId" value="' +
+                                                    cliente.id +
+                                                    '" hidden>' +
+                                            '</div>';
+
+                            $('#searchResults'+idmodal).append(clienteHtml);
+
+                        });
+
+                    } else {
+                        // vaciar el value del id del cliente
+                        var inputClientereserva = document.getElementById('idclientereserva');
+                            inputClientereserva.value = "";
+                        // Mostrar mensaje si no se encuentran resultados
+                        var mensajeHtml = '<p style="color: red;">No se encontraron resultados.</p>' + '<hr>' +
+                                            '<h5 style="text-align: center;"><strong>AGREGAR NUEVO CLIENTE</strong></h5>';
+                        $('#searchMessage'+idmodal).html(mensajeHtml);
+
+                        // mostrar formulario para agregar nuevo cliente
+                        var modalCliente = document.getElementById('modal-cliente'+idmodal);
+                        modalCliente.style.display = 'block';
+                    }
+                }
+                });
+            });
+
+            // Evento que se activa al cerrar cualquier modal
+            $(document).on('hidden.bs.modal', '.modal', function() {
+                // Restablecer los campos de búsqueda del modal actual
+                var idmodal = $(this).find('.idmodal').attr('value');
+                $(this).find('.searchInput').val('');
+
+                // Restablecer los resultados y el mensaje del modal actual
+                $(this).find('#searchResults'+idmodal).empty();
+                $(this).find('#searchMessage'+idmodal).empty();
+
+                //ocultar formulario de crear cliente
+                var modalCliente = document.getElementById('modal-cliente'+idmodal);
+                modalCliente.style.display = 'none';
+            });
+
+        });
+</script>
+
+    <script>
+        document.querySelector('form').addEventListener('submit', function(event) {
+        event.preventDefault(); // Previene el envío del formulario
+
+        // Obtén los valores de las fechas de inicio y fin
+        var fechaInicio = document.getElementById('fecha_inicio').value;
+        var fechaFin = document.getElementById('fecha_fin').value;
+
+        // Actualiza la URL de la acción del formulario con los valores de las fechas
+        this.action = this.action + '?fecha_inicio=' + fechaInicio + '&fecha_fin=' + fechaFin;
+
+        // Envía el formulario
+        this.submit();
+    });
+    </script>
+
+@stop
 

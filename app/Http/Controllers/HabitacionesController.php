@@ -13,7 +13,7 @@ class HabitacionesController extends Controller
      */
     public function index()
     {
-        $habitaciones=Habitaciones::all();
+        $habitaciones=Habitaciones::paginate(8);
         return view('habitaciones.index', compact('habitaciones'));
     }
 

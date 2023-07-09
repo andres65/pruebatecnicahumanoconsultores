@@ -52,6 +52,7 @@
                     @endforeach
                     </tbody>
                 </table>
+                {{$clientes->links()}}
             </div>
             @include('clientes.create')
 

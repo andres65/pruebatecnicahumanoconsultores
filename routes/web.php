@@ -39,12 +39,12 @@ Route::resource('tipodocumento', TipoDocumentosController::class)->middleware(['
 Route::resource('empleados', EmpleadosController::class)->middleware(['auth', 'verified']);
 Route::resource('clientes', ClientesController::class)->middleware(['auth', 'verified']);
 Route::resource('habitaciones', HabitacionesController::class)->middleware(['auth', 'verified']);
+
+//RUTAS MODULO RESERVAS
 Route::resource('reservas', ReservasController::class)->middleware(['auth', 'verified']);
-
 Route::post('/reservas-buscar', 'App\Http\Controllers\ReservasController@searchReservation')->middleware(['auth', 'verified'])->name('reservas.buscar');
-Route::post('/reservas-createcliente', 'App\Http\Controllers\ReservasController@createCliente')->middleware(['auth', 'verified'])->name('reservas.createcliente');
-Route::get('/reservas-buscarcliente', 'App\Http\Controllers\ReservasController@buscarCliente')->middleware(['auth', 'verified'])->name('reservas.buscarcliente');
+Route::post('/reservas-guardarcliente', 'App\Http\Controllers\ReservasController@guardarCliente')->middleware(['auth', 'verified'])->name('reservas.guardarcliente');
+Route::post('/reservas-buscarcliente', 'App\Http\Controllers\ReservasController@buscarCliente')->middleware(['auth', 'verified'])->name('reservas.buscarcliente');
 Route::get('/reservas-listareservas', 'App\Http\Controllers\ReservasController@listaReservas')->middleware(['auth', 'verified'])->name('reservas.listareservas');
-
 
 require __DIR__.'/auth.php';

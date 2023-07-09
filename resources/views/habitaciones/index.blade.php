@@ -52,6 +52,7 @@
                     @endforeach
                     </tbody>
                 </table>
+                {{$habitaciones->links()}}
             </div>
             @include('habitaciones.create')
 

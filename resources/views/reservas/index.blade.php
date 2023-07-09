@@ -12,7 +12,7 @@
 
         {{-- Formulario busqueda habitacion  --}}
             <form action="{{ route('reservas.buscar') }}" method="POST"  class="col-md-11">
-                <br>
+
                 @csrf
                 <div class="form-row align-items-center">
                     <div class="col-md-4">
@@ -31,13 +31,14 @@
                     </div>
                     <div class="col-md-2">
                         <label for="num_personas" class="form-label">N° PERSONAS</label>
-                        <input type="number" class="form-control" name="num_personas" id="num_personas" placeholder="Cantidad de personas" value="{{ isset($cupo) ? $cupo : '' }}" required>
+                        <input type="number" class="form-control" name="num_personas" id="num_personas" placeholder="Cantidad de personas" value="{{ isset($cupo) ? $cupo : '' }}" min="1" required>
                     </div>
                     <div class="col-md-2" style="margin-bottom: 0px !important;margin-top: 28px;">
                         <button type="submit" class="btn btn-primary btn-lg btn-block" style="padding-top: 3px;padding-bottom: 3px;">Buscar</button>
                     </div>
-                </div>
+                </div><hr>
             </form>
+
         <div class="col-md-11">
             <br>
             <div class="table-responsive">
@@ -69,8 +70,6 @@
                     </tbody>
                 </table>
             </div>
-            {{-- @include('reservas.create') --}}
-            @include('reservas.create_cliente')
 
         </div>
     </div>
@@ -78,7 +77,6 @@
 @stop
 
 @section('css')
-    <link rel="stylesheet" href="/css/admin_custom.css">
-@stop
 
+@stop
 

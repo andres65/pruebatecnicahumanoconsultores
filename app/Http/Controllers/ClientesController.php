@@ -17,7 +17,8 @@ class ClientesController extends Controller
     {
         $clientes = DB::table('clientes')
                 ->where('estado', '=', 1)
-                ->get();
+                ->paginate(8);
+
         $tipoDocumento=DB::table('tipo_documentos')
         ->where('estado', '=', 1)
         ->get();

@@ -17,7 +17,8 @@ class EmpleadosController extends Controller
     {
         $empleados = DB::table('empleados')
                 ->where('estado', '=', 1)
-                ->get();
+                ->paginate(8);
+
         $tipoDocumento=DB::table('tipo_documentos')
         ->where('estado', '=', 1)
         ->get();

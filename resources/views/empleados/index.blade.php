@@ -64,6 +64,7 @@
                     @endforeach
                     </tbody>
                 </table>
+                {{$empleados->links()}}
             </div>
             @include('empleados.create')
 

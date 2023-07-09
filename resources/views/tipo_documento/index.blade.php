@@ -50,6 +50,7 @@
                     @endforeach
                     </tbody>
                 </table>
+                {{$tipoDocumento->links()}}
             </div>
             @include('tipo_documento.create')
 

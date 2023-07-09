@@ -13,7 +13,7 @@ class TipoDocumentosController extends Controller
      */
     public function index()
     {
-        $tipoDocumento=TipoDocumentos::all();
+        $tipoDocumento=TipoDocumentos::paginate(5);
         return view('tipo_documento.index', compact('tipoDocumento'));
     }
 

@@ -3,7 +3,7 @@
 @section('title', 'ReservacionesActivas')
 
 @section('content_header')
-    <h1>Reservaciónes Activas</h1>
+    <h1>Reservaciónes</h1>
 @stop
 
 @section('content')
@@ -22,7 +22,8 @@
                             <th scope="col">CLIENTE</th>
                             <th scope="col">ID CLIENTE</th>
                             <th scope="col">RESPONSABLE</th>
-                            {{-- <th scope="col">ACCIONES</th> --}}
+                            <th scope="col">ESTADO</th>
+                            <th scope="col">ACCIONES</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -36,13 +37,18 @@
                                     <td>{{ $modelCliente->getNameCustomer($reserva->cliente_id) }}</td>
                                     <td>{{ $modelCliente->getNameCustomerNumDocument($reserva->cliente_id) }}</td>
                                     <td>{{ $modelUser->getNameUser($reserva->empleado_id) }}</td>
-                                    {{-- <td>
-                                        <button type="button" class="btn btn-info" data-toggle="modal" data-target="#edit{{$reserva->id}}" title="Reservar">
-                                            <i class="fas fa-bell"></i>
+                                     @if ($reserva->estado == 1)
+                                        <td style="color: green;">ACTIVO</td>
+                                    @else
+                                        <td style="color: red;">INACTIVO</td>
+                                    @endif
+                                    <td>
+                                        <button type="button" class="btn btn-info" data-toggle="modal" data-target="#editagenda{{$reserva->id}}" title="Editar">
+                                            <i class="fas fa-pen"></i>
                                         </button>
                                     </td>
-                                </tr> --}}
-                                {{-- @include('reservas.info') --}}
+                                </tr>
+                                @include('reservas.editagenda')
                             @endforeach
                         @endif
                     </tbody>
@@ -57,6 +63,10 @@
 
 @section('css')
 
+@stop
+
+@section('js')
+    <script> console.log('Menú agenda!'); </script>
 @stop
 
 

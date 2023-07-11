@@ -32,9 +32,9 @@
                          <tr class="">
                             <td>{{$Documento->nombre}}</td>
                             @if ($Documento->estado == 1)
-                                <td>ACTIVO</td>
+                                <td style="color: green;">ACTIVO</td>
                             @else
-                                <td>INACTIVO</td>
+                                <td style="color: red;">INACTIVO</td>
                             @endif
                             <td>{{$Documento->observaciones}}</td>
                             <td>

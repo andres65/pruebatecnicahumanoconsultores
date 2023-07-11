@@ -41,7 +41,11 @@ class ReservasController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $reserva=Reservas::find($id);
+        $reserva->estado=$request->input('estado');
+        $reserva->update();
+
+        return redirect()->back();
     }
 
     /**
@@ -170,6 +174,17 @@ class ReservasController extends Controller
         $modelUser = new User();
 
         return view('reservas.listareservas', ['reservas' => $reservas,'modelCliente' => $modelCliente,'modelHabitacion' => $modelHabitacion,'modelUser' => $modelUser]);
+    }
+
+    public function agendaReservas()
+    {
+        $reservas = Reservas::orderBy('id', 'desc')
+                ->paginate(8);
+        $modelCliente = new Clientes();
+        $modelHabitacion = new Habitaciones();
+        $modelUser = new User();
+
+        return view('reservas.agenda', ['reservas' => $reservas,'modelCliente' => $modelCliente,'modelHabitacion' => $modelHabitacion,'modelUser' => $modelUser]);
     }
 
 

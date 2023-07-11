@@ -33,9 +33,9 @@
                          <tr class="">
                             <td>{{$habitacion->nombre}}</td>
                             @if ($habitacion->estado == 1)
-                                <td>ACTIVO</td>
+                                <td style="color: green;">ACTIVO</td>
                             @else
-                                <td>INACTIVO</td>
+                                <td style="color: red;">INACTIVO</td>
                             @endif
                             <td>{{$habitacion->cupo}}</td>
                             <td>{{$habitacion->observaciones}}</td>

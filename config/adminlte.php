@@ -346,7 +346,7 @@ return [
         ['header' => 'AGENDA'],
         [
             'text' => 'Agenda',
-            'url'  => 'agendas',
+            'url'  => 'reservas-agendareservas',
             'icon' => 'fas fa-fw fa-calendar',
         ],
     ],

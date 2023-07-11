@@ -46,5 +46,6 @@ Route::post('/reservas-buscar', 'App\Http\Controllers\ReservasController@searchR
 Route::post('/reservas-guardarcliente', 'App\Http\Controllers\ReservasController@guardarCliente')->middleware(['auth', 'verified'])->name('reservas.guardarcliente');
 Route::post('/reservas-buscarcliente', 'App\Http\Controllers\ReservasController@buscarCliente')->middleware(['auth', 'verified'])->name('reservas.buscarcliente');
 Route::get('/reservas-listareservas', 'App\Http\Controllers\ReservasController@listaReservas')->middleware(['auth', 'verified'])->name('reservas.listareservas');
+Route::get('/reservas-agendareservas', 'App\Http\Controllers\ReservasController@agendaReservas')->middleware(['auth', 'verified'])->name('reservas.agendareservas');
 
 require __DIR__.'/auth.php';
